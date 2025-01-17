@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/backgroundPrimary"
+    tools:context=".ui.fragments.login.AnaSayfaFragment">
+
+    <!-- Home Page Header -->
+    <TextView
+        android:id="@+id/tvHomeHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Welcome to the App"
+        android:textSize="24sp"
+        android:layout_marginTop="200dp"
+        android:textColor="@color/primaryText"
+        android:fontFamily="sans-serif-medium"
+        android:layout_gravity="center_horizontal"
+        android:paddingBottom="16dp" />
+
+    <!-- Login Button -->
+    <Button
+        android:id="@+id/btnLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:textSize="16sp"
+        android:backgroundTint="@color/primary"
+        android:textColor="@color/white"
+        android:padding="12dp"
+        android:layout_marginTop="12dp"
+        android:fontFamily="sans-serif-medium"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Register Button -->
+    <Button
+        android:id="@+id/btnRegister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Register"
+        android:textSize="16sp"
+        android:backgroundTint="@color/accent"
+        android:textColor="@color/white"
+        android:padding="12dp"
+        android:layout_marginTop="12dp"
+        android:fontFamily="sans-serif-medium" />
+</LinearLayout>
