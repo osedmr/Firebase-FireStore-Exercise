@@ -12,6 +12,7 @@ import com.example.firebaseexercise.R
 import com.example.firebaseexercise.databinding.ActivityMainBinding
 import com.example.firebaseexercise.ui.fragments.login.AnaSayfaFragment
 import com.example.firebaseexercise.ui.fragments.onboarding.OnboardingFragment
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -23,10 +24,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-
-
-
         val sharedPref = getSharedPreferences("onBoarding", Context.MODE_PRIVATE)
         val seen = sharedPref.getBoolean("seen", false)
 
@@ -36,11 +33,19 @@ class MainActivity : AppCompatActivity() {
 
         val navGraph = navController.navInflater.inflate(R.navigation.navigation)
 
+// Firebase Auth üzerinden giriş yapmış kullanıcıyı kontrol et
+        val currentUser = FirebaseAuth.getInstance().currentUser
+
         navGraph.setStartDestination(
-            if (seen) R.id.anaSayfaFragment else R.id.onboardingFragment
+            when {
+                currentUser != null -> R.id.personFragment // Eğer kullanıcı giriş yaptıysa ana sayfaya gitsin
+                seen -> R.id.anaSayfaFragment // Onboarding tamamlandıysa login sayfasına gitsin
+                else -> R.id.onboardingFragment // İlk defa açıyorsa onboarding görsün
+            }
         )
 
         navController.graph = navGraph
+
 
     }
 

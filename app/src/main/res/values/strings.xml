@@ -2,4 +2,6 @@
     <string name="app_name">Firebase Exercise</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="g_google">oogle</string>
+    <string name="web_client_id">439794581506-43nt45p71eocg7m77jt9g173g45p7i07.apps.googleusercontent.com</string>
 </resources>
