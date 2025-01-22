@@ -24,6 +24,9 @@ import javax.inject.Inject
 @HiltViewModel
 class UserViewModel @Inject constructor(val userRepository: UserRepository) : ViewModel() {
 
+    private val _toastMessage = MutableLiveData<String>()
+    val toastMessage: LiveData<String> get() = _toastMessage
+
     private val _loginFlow = MutableStateFlow<Resource<FirebaseUser>?>(null)
     val loginFlow: MutableStateFlow<Resource<FirebaseUser>?> = _loginFlow
 
@@ -48,16 +51,57 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository) : Vi
         checkUserSession()
     }
     fun login(email: String, password: String) = viewModelScope.launch(Dispatchers.IO) {
-        _loginFlow.value =Resource.Loading()
-        val result = userRepository.login(email, password)
-        _loginFlow.value = result
+        _loginFlow.value = Resource.Loading()
 
+        val result = userRepository.login(email, password)
+
+        when (result) {
+            is Resource.Success -> {
+                val user = result.data
+                if (user != null && user.isEmailVerified) {
+                    _loginFlow.value = Resource.Success(user)
+                } else {
+                    userRepository.logOut() // Kullanıcıyı çıkış yaptır
+                    _loginFlow.value = Resource.Error("Lütfen e-posta adresinizi doğrulayın!")
+                }
+            }
+            is Resource.Error -> {
+                val hataMesaji = when {
+                    result.message!!.contains("The supplied auth credential is incorrect", ignoreCase = true) ->
+                        "E-posta veya şifre hatalı!"
+                    result.message.contains("There is no user record", ignoreCase = true) ->
+                        "Bu e-posta adresiyle kayıtlı kullanıcı bulunamadı!"
+                    result.message.contains("password is invalid", ignoreCase = true) ->
+                        "Şifre yanlış! Lütfen tekrar deneyin."
+                    else -> "Giriş başarısız! ${result.message}"
+                }
+                _loginFlow.value = Resource.Error(hataMesaji)
+            }
+            else -> {}
+        }
     }
+
+
 
     fun register(name:String,email: String, password: String) = viewModelScope.launch(Dispatchers.IO) {
         _registerFlow.value =Resource.Loading()
         val result = userRepository.register(name,email, password)
         _registerFlow.value = result
+        when (result) {
+            is Resource.Success -> {
+                if (result.data?.isEmailVerified == true) {
+                    _toastMessage.postValue("Kayıt başarılı, giriş yapabilirsiniz.")
+                } else {
+                    _toastMessage.postValue("Lütfen e-posta adresinizi doğrulayın!")
+                }
+            }
+            is Resource.Loading ->{
+                _toastMessage.postValue("Kayıt olundu")
+            }
+            is Resource.Error -> {
+                _toastMessage.postValue(result.message ?: "Bilinmeyen bir hata oluştu.")
+            }
+        }
 
     }
 

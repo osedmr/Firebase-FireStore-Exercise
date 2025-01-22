@@ -60,6 +60,9 @@ class LoginFragment : Fragment() {
                 findNavController().navigate(R.id.personFragment)
             }
         }
+        viewModel.toastMessage.observe(viewLifecycleOwner, Observer { message->
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+        })
     }
 
 

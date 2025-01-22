@@ -15,9 +15,18 @@ class UserDataSource @Inject constructor (val userAuth: FirebaseAuth) {
 
     val currentUser: FirebaseUser?
         get() = userAuth.currentUser
+
+
     suspend fun login(email: String, password: String):Resource<FirebaseUser>{
         return try {
             val result = userAuth.signInWithEmailAndPassword(email,password).await()
+            result.user?.let {user ->
+                if (user.isEmailVerified){
+                    Resource.Success(user)
+                }else{
+                    userAuth.signOut()
+                }
+            }
             Resource.Success(result.user!!)
         }catch (e:Exception) {
             Resource.Error(e.localizedMessage ?: "Error")
@@ -28,7 +37,11 @@ class UserDataSource @Inject constructor (val userAuth: FirebaseAuth) {
     suspend fun register(name:String,email: String, password: String):Resource<FirebaseUser>{
         return try {
             val result = userAuth.createUserWithEmailAndPassword(email,password).await()
-            result?.user?.updateProfile(UserProfileChangeRequest.Builder().setDisplayName(name).build())
+            result.user?.let { user ->
+                user.sendEmailVerification().await()
+                user.updateProfile(UserProfileChangeRequest.Builder().setDisplayName(name).build()).await()
+                userAuth.signOut()
+            }
             Resource.Success(result.user!!)
         }catch (e:Exception) {
             Resource.Error(e.localizedMessage ?: "Error")
