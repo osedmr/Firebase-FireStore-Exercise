@@ -1,10 +1,13 @@
 package com.example.firebaseexercise.ui.fragments.login
 
+import android.app.AlertDialog
 import android.os.Bundle
+import android.text.InputType
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -43,6 +46,9 @@ class LoginFragment : Fragment() {
 
         binding.tvRegisterClickable.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
+        }
+        binding.tvForgotPassword.setOnClickListener {
+            resetPasswordDialog()
         }
         binding.btnLogin.setOnClickListener {
 
@@ -118,5 +124,29 @@ class LoginFragment : Fragment() {
                 flow.collect(collect)
             }
         }
+    }
+    private fun resetPasswordDialog() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Şifremi Unuttum")
+
+        val inputText=EditText(requireContext())
+        inputText.hint="Email Adresini giriniz"
+        inputText.inputType =InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+        builder.setView(inputText)
+
+        builder.setPositiveButton("Gönder"){dialog,_ ->
+            val email=inputText.text.toString().trim()
+            if (email.isNotEmpty()){
+                viewModel.resetPassword(email)
+            }else{
+                Toast.makeText(requireContext(),"Email boş bırakılamaz",Toast.LENGTH_SHORT).show()
+
+            }
+            dialog.dismiss()
+        }
+        builder.setNegativeButton("İptal"){dialog,_ ->
+            dialog.dismiss()
+        }
+        builder.create().show()
     }
 }

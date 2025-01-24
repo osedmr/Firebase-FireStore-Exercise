@@ -106,6 +106,21 @@
             android:textStyle="bold"
             tools:ignore="TouchTargetSizeCheck" />
     </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/tvForgotPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingTop="12dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="Şifremi Unuttum"
+        android:textColor="@color/primary"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        tools:ignore="TouchTargetSizeCheck" />
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyle"

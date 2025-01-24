@@ -19,5 +19,6 @@ class UserRepository @Inject constructor (val userDataSource: UserDataSource) {
         return userDataSource.firebaseAuthWithGoogle(account)
     }
 
+    suspend fun resetPassword(email: String) = userDataSource.resetPassword(email)
 
 }

@@ -1,5 +1,6 @@
 package com.example.firebaseexercise.data.datasource
 
+import android.util.Log
 import com.example.firebaseexercise.util.Resource
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.firebase.auth.AuthCredential
@@ -51,6 +52,14 @@ class UserDataSource @Inject constructor (val userAuth: FirebaseAuth) {
     fun logOut() {
          userAuth.signOut()
     }
+    suspend fun resetPassword(email: String): Resource<String> {
+        try {
+          userAuth.sendPasswordResetEmail(email).await()
+        }catch (e:Exception){
+            Log.d("TAG", "resetPassword: ${e.message}")
+        }
+        return Resource.Success("Mail gönderildi")
+    }
 
     // DataSource: Firebase ile giriş işlemi
     suspend fun firebaseAuthWithGoogle(account: GoogleSignInAccount): Resource<FirebaseUser> {
@@ -63,6 +72,7 @@ class UserDataSource @Inject constructor (val userAuth: FirebaseAuth) {
             Resource.Error("Google ile giriş başarısız: ${e.message ?: "Bilinmeyen hata"}")
         }
     }
+
 
 
 }

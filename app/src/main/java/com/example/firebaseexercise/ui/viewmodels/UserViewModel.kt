@@ -102,7 +102,6 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository) : Vi
                 _toastMessage.postValue(result.message ?: "Bilinmeyen bir hata oluştu.")
             }
         }
-
     }
 
     fun logOut(activity: Activity) {
@@ -132,19 +131,27 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository) : Vi
             _loginFlow.value = Resource.Error("Giriş hatası: ${e.message}")
         }
     }
-
-
-
-
-
-
-
     fun getGoogleSignInClient(activity: Activity) : GoogleSignInClient {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(activity.getString(R.string.web_client_id))
             .requestEmail()
             .build()
         return GoogleSignIn.getClient(activity,gso)
+    }
+    fun resetPassword(email: String)=viewModelScope.launch(Dispatchers.IO) {
+
+        val result=  userRepository.resetPassword(email)
+        when(result){
+            is Resource.Success -> {
+                _toastMessage.postValue("Mail gönderildi")
+            }
+            is Resource.Loading ->{
+                _toastMessage.postValue("Kayıt olundu")
+            }
+            is Resource.Error -> {
+                _toastMessage.postValue(result.message ?: "Bilinmeyen bir hata oluştu.")
+            }
+        }
     }
 
 }
