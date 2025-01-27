@@ -21,16 +21,7 @@ class AppModule {
     //person Dependency Injection
     @Provides
     @Singleton
-    fun provideCollectionReference(): CollectionReference {
-        return FirebaseFirestore.getInstance().collection("Persons")
-
-    }
-
-    @Provides
-    @Singleton
-    fun providePersonDataSource(collectionReference: CollectionReference): PersonDataSource {
-        return PersonDataSource(collectionReference)
-    }
+    fun providePersonDataSource() = PersonDataSource()
 
     @Provides
     @Singleton
